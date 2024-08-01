@@ -33,3 +33,8 @@ MONGODB_URL = mongodb+srv://manishguptagm01:wRcXZyGN1WO2dgkW@cluster0.gnlbmej.mo
 
 
 npx tsc --init
+npm i ejs
+npm i nodemailer
+
+npm i --save-dev @types/ejs
+npm i --save-dev @types/nodemailer
