@@ -1,8 +1,8 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
 import bcrypt from "bcryptjs";
 
-const emailRegexPattern: RegExp = /^[^\s@]+@[^\S@]+\.[^\s@]]+$/;
 
+const emailRegexPattern: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export interface IUser extends Document {
   name: string;
   email: string;
