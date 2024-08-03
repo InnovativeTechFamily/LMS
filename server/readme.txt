@@ -44,3 +44,17 @@ done time 2:46:06
 Login ,Logout User
 
 done 3:07:00
+
+
+issue is 
+[INFO] 11:06:13 Restarting: D:\SQL\GitHub\LMS\server\tsconfig.json has been modified
+Redis connected
+Compilation error in D:\SQL\GitHub\LMS\server\middleware\auth.ts
+[ERROR] 11:06:21 ? Unable to compile TypeScript:
+middleware/auth.ts(28,9): error TS2339: 
+Property 'user' does not exist on type 'Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
+
+fix iwant to extend Request into new model
+interface CustomRequest extends Request {
+  user?: any;
+}

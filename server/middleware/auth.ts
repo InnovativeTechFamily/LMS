@@ -4,8 +4,12 @@ import ErrorHandler from "../utils/ErrorHandler";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { redis } from "../utils/redis";
 
+interface CustomRequest extends Request {
+  user?: any;
+}
+
 export const isAutheticated = CatchAsyncError(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: CustomRequest, res: Response, next: NextFunction) => {
     console.log("User in middleware: ");
 
     const access_token = req.cookies.access_token as string;
@@ -33,3 +37,19 @@ export const isAutheticated = CatchAsyncError(
     next();
   }
 );
+
+
+// validate user role
+export const authorizeRoles = (...roles: string[]) => {
+    return (req: CustomRequest, res: Response, next: NextFunction) => {
+      if (!roles.includes(req.user?.role || "")) {
+        return next(
+          new ErrorHandler(
+            `Role: ${req.user?.role} is not allowed to access this resource`,
+            403
+          )
+        );
+      }
+      next();
+    };
+  };

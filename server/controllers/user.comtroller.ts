@@ -10,6 +10,10 @@ import sendMail from "../utils/sendMail";
 import { sendToken } from "../utils/jwt";
 import { redis } from "../utils/redis";
 
+interface CustomRequest extends Request {
+  user?: any;
+}
+
 // register user
 interface IRegistrationBody {
   name: string;
@@ -163,12 +167,12 @@ export const loginUser = CatchAsyncError(
 
 // logout user
 export const logoutUser = CatchAsyncError(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: CustomRequest, res: Response, next: NextFunction) => {
     try {
       res.cookie("access_token", "", { maxAge: 1 });
       res.cookie("refresh_token", "", { maxAge: 1 });
-     // const userId = req.user?._id || "";
-     // redis.del(userId as string);
+      const userId = req.user?._id || "";
+      redis.del(userId);
       res.status(200).json({
         success: true,
         message: "Logged out successfully",

@@ -5,11 +5,11 @@ import {
   loginUser,
   logoutUser,
 } from "../controllers/user.comtroller";
-//import { isAutheticated } from "../middleware/auth";
+import { authorizeRoles, isAutheticated } from "../middleware/auth";
 const userRouter = express.Router();
 
 userRouter.post("/registration", registrationUser);
 userRouter.post("/activate-user", activateUser);
 userRouter.post("/login", loginUser);
-userRouter.get("/logout",logoutUser);
+userRouter.get("/logout",isAutheticated,logoutUser);
 export default userRouter;
