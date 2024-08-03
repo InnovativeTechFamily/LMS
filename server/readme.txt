@@ -75,3 +75,6 @@ Degine Courde Model
 now here we add both data as a cookies save in redis because redis is server less
 
 5:14:50 Get Course Content
+5:25:21 Create Question Add Answer
+npm i node-cron
+npm i --save-dev @types/node-cron
