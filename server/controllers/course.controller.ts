@@ -5,7 +5,10 @@ import cloudinary from "cloudinary";
 import { createCourse, getAllCoursesService } from "../services/course.service";
 import CourseModel, { IComment } from "../models/course.model";
 import { redis } from "../utils/redis";
-
+import { IUser } from "../models/user.model";
+interface CustomRequest extends Request {
+    user?: IUser;
+  }
 
 // upload course
 export const uploadCourse = CatchAsyncError(
@@ -135,6 +138,36 @@ export const getAllCourses = CatchAsyncError(
           courses,
         });
     }
+      } catch (error: any) {
+        return next(new ErrorHandler(error.message, 500));
+      }
+    }
+  );
+  // get course content -- only for valid user
+export const getCourseByUser = CatchAsyncError(
+    async (req: CustomRequest, res: Response, next: NextFunction) => {
+      try {
+        const userCourseList = req.user?.courses;
+        const courseId = req.params.id;
+  
+        const courseExists = userCourseList?.find(
+          (course: any) => course._id.toString() === courseId
+        );
+  
+        if (!courseExists) {
+          return next(
+            new ErrorHandler("You are not eligible to access this course", 404)
+          );
+        }
+  
+        const course = await CourseModel.findById(courseId);
+  
+        const content = course?.courseData;
+  
+        res.status(200).json({
+          success: true,
+          content,
+        });
       } catch (error: any) {
         return next(new ErrorHandler(error.message, 500));
       }

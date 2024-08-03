@@ -73,3 +73,5 @@ Degine Courde Model
 4:57:14 Get Single & All Courses
 
 now here we add both data as a cookies save in redis because redis is server less
+
+5:14:50 Get Course Content
