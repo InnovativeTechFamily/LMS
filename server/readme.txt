@@ -58,3 +58,9 @@ fix iwant to extend Request into new model
 interface CustomRequest extends Request {
   user?: any;
 }
+
+
+--
+Generate New Token,Get User,Social Authentication
+
+done 3:49:16

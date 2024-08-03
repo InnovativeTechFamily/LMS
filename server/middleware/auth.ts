@@ -3,9 +3,11 @@ import { CatchAsyncError } from "./catchAsyncErrors";
 import ErrorHandler from "../utils/ErrorHandler";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { redis } from "../utils/redis";
+import { IUser } from "../models/user.model";
+
 
 interface CustomRequest extends Request {
-  user?: any;
+  user?: IUser;
 }
 
 export const isAutheticated = CatchAsyncError(
