@@ -7,6 +7,8 @@ import jwt, { Secret } from "jsonwebtoken";
 import ejs from "ejs";
 import path from "path";
 import sendMail from "../utils/sendMail";
+import { sendToken } from "../utils/jwt";
+import { redis } from "../utils/redis";
 
 // register user
 interface IRegistrationBody {
@@ -127,3 +129,52 @@ interface IActivationRequest {
       }
     }
   );
+  // Login user
+interface ILoginRequest {
+  email: string;
+  password: string;
+}
+
+export const loginUser = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { email, password } = req.body as ILoginRequest;
+      console.log(email, password);
+      if (!email || !password) {
+        return next(new ErrorHandler("Please enter email and password", 400));
+      }
+
+      const user = await userModel.findOne({ email }).select("+password");
+
+      if (!user) {
+        return next(new ErrorHandler("Invalid email or password", 400));
+      }
+
+      const isPasswordMatch = await user.comparePassword(password);
+      if (!isPasswordMatch) {
+        return next(new ErrorHandler("Invalid email or password", 400));
+      }
+      sendToken(user, 200, res);
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
+
+// logout user
+export const logoutUser = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      res.cookie("access_token", "", { maxAge: 1 });
+      res.cookie("refresh_token", "", { maxAge: 1 });
+     // const userId = req.user?._id || "";
+     // redis.del(userId as string);
+      res.status(200).json({
+        success: true,
+        message: "Logged out successfully",
+      });
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
