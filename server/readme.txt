@@ -64,3 +64,8 @@ interface CustomRequest extends Request {
 Generate New Token,Get User,Social Authentication
 
 done 3:49:16
+
+update User Info password and avatar
+
+4:19:57
+Degine Courde Model
