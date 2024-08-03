@@ -70,3 +70,6 @@ update User Info password and avatar
 4:19:57
 Degine Courde Model
 4:38:35 Create And Edit Course
+4:57:14 Get Single & All Courses
+
+now here we add both data as a cookies save in redis because redis is server less
