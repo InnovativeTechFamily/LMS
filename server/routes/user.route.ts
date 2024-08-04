@@ -10,6 +10,9 @@ import {
   updateUserInfo,
   updatePassword,
   updateProfilePicture,
+  getAllUsers,
+  updateUserRole,
+  deleteUser,
 } from "../controllers/user.comtroller";
 import { authorizeRoles, isAutheticated } from "../middleware/auth";
 const userRouter = express.Router();
@@ -25,4 +28,24 @@ userRouter.put("/update-user-info",isAutheticated, updateUserInfo);
 userRouter.put("/update-user-password", isAutheticated, updatePassword);
 
 userRouter.put("/update-user-avatar", isAutheticated, updateProfilePicture);
+
+userRouter.get(
+  "/get-users",
+  isAutheticated,
+  authorizeRoles("admin"),
+  getAllUsers
+);
+userRouter.put(
+  "/update-user",
+  isAutheticated,
+  authorizeRoles("admin"),
+  updateUserRole
+);
+
+userRouter.delete(
+  "/delete-user/:id",
+  isAutheticated,
+  authorizeRoles("admin"),
+  deleteUser
+);
 export default userRouter;

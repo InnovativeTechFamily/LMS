@@ -10,7 +10,7 @@ import sendMail from "../utils/sendMail";
 import NotificationModel from "../models/notification.Model";
 import { redis } from "../utils/redis";
 import { RedisKey } from "ioredis";
-import { newOrder } from "../services/order.service";
+import { getAllOrdersService, newOrder } from "../services/order.service";
 
 interface CustomRequest extends Request {
     user?: IUser;
@@ -111,3 +111,23 @@ export const createOrder = CatchAsyncError(
       }
     }
   );
+
+  // get All orders --- only for admin
+export const getAllOrders = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      getAllOrdersService(res);
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  }
+);
+
+//  send stripe publishble key
+export const sendStripePublishableKey = CatchAsyncError(
+  async (req: Request, res: Response) => {
+    res.status(200).json({
+      publishablekey: process.env.STRIPE_PUBLISHABLE_KEY,
+    });
+  }
+);
