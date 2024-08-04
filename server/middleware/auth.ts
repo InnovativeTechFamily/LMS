@@ -12,7 +12,7 @@ interface CustomRequest extends Request {
 
 export const isAutheticated = CatchAsyncError(
   async (req: CustomRequest, res: Response, next: NextFunction) => {
-    console.log("User in middleware: ");
+   // console.log("User in middleware: ");
 
     const access_token = req.cookies.access_token as string;
     if (!access_token) {
@@ -26,7 +26,7 @@ export const isAutheticated = CatchAsyncError(
     }
 
     const user = await redis.get(decoded.id);
-    console.log("User in middleware: ", user);
+   // console.log("User in middleware: ", user);
 
     if (!user) {
       return next(

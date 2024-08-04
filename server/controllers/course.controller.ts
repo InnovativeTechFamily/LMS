@@ -124,16 +124,16 @@ export const getSingleCourse = CatchAsyncError(
 export const getAllCourses = CatchAsyncError(
     async (req: Request, res: Response, next: NextFunction) => {
       try {
-
-        const isCacheExist = await redis.get("allCourses");
+            // i thing this is for dynamic for courseId later we do
+        // const isCacheExist = await redis.get("allCourses");
   
-        if (isCacheExist) {
-          const course = JSON.parse(isCacheExist);
-          res.status(200).json({
-            success: true,
-            course,
-          });
-        } else {
+        // if (isCacheExist) {
+        //   const course = JSON.parse(isCacheExist);
+        //   res.status(200).json({
+        //     success: true,
+        //     course,
+        //   });
+        // } else {
         const courses = await CourseModel.find().select(
           "-courseData.videoUrl -courseData.suggestion -courseData.questions -courseData.links"
         );
@@ -142,7 +142,7 @@ export const getAllCourses = CatchAsyncError(
           success: true,
           courses,
         });
-    }
+    //}
       } catch (error: any) {
         return next(new ErrorHandler(error.message, 500));
       }
