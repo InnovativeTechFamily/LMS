@@ -78,3 +78,19 @@ now here we add both data as a cookies save in redis because redis is server les
 5:25:21 Create Question Add Answer
 npm i node-cron
 npm i --save-dev @types/node-cron
+
+5:51:08 add review & Reply IN Review 
+05:51:07 - 06:14:48 add review in course
+
+06:14:48 - 06:22:08 Notification and Order model 
+06:22:08 - 06:47:38 Create Order
+06:47:38 - 07:07:40 Get all notifications, update notification status
+07:07:40 - 07:14:23 Delete read notifications -- with crone after a certain time
+07:14:23 - 07:23:38 Get all users, courses, orders
+07:23:38 - 07:28:45  Add and get members in Admin dashboard 
+07:28:45 - 07:38:16  Delete course, Delete user
+07:38:16 - 08:00:16 Get the last 28 days' users,orders, notifications for the last 1year 
+08:00:16 - 08:07:23 Layout model Design
+08:07:23 - 08:25:00 Create Faq,Hero banner,Categories
+08:25:00 - 08:39:20 Edit Faq,Hero banner,Categories
+08:39:20 - 08:55:00 Advance cache maintenance
