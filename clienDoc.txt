@@ -1,2 +1,6 @@
 npx create-next-app@latest
 npm i next-themes
+
+35:10
+
+npm i react-icons 
