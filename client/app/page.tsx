@@ -3,6 +3,7 @@ import React, { FC, useEffect, useState } from "react";
 import Heading from "./utils/Heading";
 import Header from "./components/Header";
 import Hero from "./components/Route/Hero";
+import Footer from "./components/Footer";
 
 interface Props {}
 
@@ -20,6 +21,7 @@ const Page: FC<Props> = (props) => {
       />
       <Header open={open} setOpen={setOpen} activeItem={activeItem} setRoute={setRoute} route={route} />
       <Hero/>
+      <Footer />
     </div>
 
   );

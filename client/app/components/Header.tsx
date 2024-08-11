@@ -12,7 +12,7 @@ import Image from "next/image";
 import avatar from "../../public/assests/avatar.png";
 import { useSelector } from "react-redux";
 import { useSession } from "next-auth/react";
-import { useSocialAuthMutation } from "@/redux/features/auth/authApi";
+import { useLogOutQuery, useSocialAuthMutation } from "@/redux/features/auth/authApi";
 import toast from "react-hot-toast";
 type Props = {
   open: boolean;
@@ -24,12 +24,14 @@ type Props = {
 const Header: FC<Props> = ({ activeItem, setOpen, route, open, setRoute  }) => {
   const [active, setActive] = useState(false);
   const [openSiderbar, setOpenSiderbar] = useState(false);
-  const {data:userData,isLoading,refetch} = useLoadUserQuery(undefined,{});
+  //const {data:userData,isLoading,refetch} = useLoadUserQuery(undefined,{});
   const {user}=useSelector((state:any)=>state.auth);
   const {data}=useSession();
   const [socialAuth, { isSuccess, error }] = useSocialAuthMutation();
   const [logout, setLogout] = useState(false);
-
+  const {} = useLogOutQuery(undefined, {
+    skip: !logout ? true : false,
+  });
   console.log(data);
   useEffect(() => {
       if (!user) {
@@ -39,7 +41,7 @@ const Header: FC<Props> = ({ activeItem, setOpen, route, open, setRoute  }) => {
             name: data?.user?.name,
             avatar: data.user?.image,
           });
-          refetch();
+         // refetch();
         }
       }
       if(data === null){
@@ -51,7 +53,7 @@ const Header: FC<Props> = ({ activeItem, setOpen, route, open, setRoute  }) => {
           setLogout(true);
       }
     
-  }, [data, user,isLoading]);
+  }, [data, user]);
   if (typeof window !== "undefined") {
     window.addEventListener("scroll", () => {
       if (window.scrollY > 85) {
