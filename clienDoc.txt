@@ -4,3 +4,26 @@ npm i next-themes
 35:10
 
 npm i react-icons 
+
+
+
+Timestamps:
+00:00:00 - 00:05:03 Overview 
+00:05:03 - 00:53:26 Setting up folder, header, hero component
+00:53:26 - 01:39:19 Login signup verification UI
+{
+npm install @mui/material @emotion/react @emotion/styled react-hot-toast react-redux @reduxjs/toolkit formik yup
+}
+
+01:39:19 - 02:15:34 Signup, user activation features
+02:15:34 - 02:54:50 Login and Social Auth features
+02:54:50 - 03:57:27 Profile UI and functionalities
+03:57:27 - 04:24:02 Edit Profile and update password
+04:24:02 - 05:20:10 Admin sidebar,create course UI
+05:20:10 - 06:35:14 Course content UI and course preview UI
+06:35:14 - 06:54:13 Create Course Feature
+06:54:13 - 07:30:12 Get all users,courses,manage team
+------ I forgot to add this video in here. so this part you will find out here
+Add new user in Admin Dashboard (35.41 minutes)    • Add new user in Admin Dashboard  
+07:30:12 - 08:16:23 Edit & Delete Course
+08:16:23 - 09:19:21 Banner,FAQ,Categories Customization

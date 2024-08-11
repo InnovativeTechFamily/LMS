@@ -3,16 +3,22 @@ import React, { FC, useState } from "react";
 import NavItems from "../utils/NavItems";
 import { ThemeSwitcher } from "../utils/ThemeSwitcher";
 import { HiOutlineMenuAlt3, HiOutlineUserCircle } from "react-icons/hi";
-
+import CustomModal from "../utils/CustomModal";
+import Login from "../components/Auth/Login";
+import SignUp from "../components/Auth/SignUp";
+import Verification from "../components/Auth/Verification";
+import { useLoadUserQuery } from "@/redux/features/api/apiSlice";
 type Props = {
   open: boolean;
   setOpen: (open: boolean) => void;
   activeItem: number;
+  route: string;
+  setRoute: (route: string) => void;
 };
-const Header: FC<Props> = ({ open, setOpen, activeItem }) => {
+const Header: FC<Props> = ({ activeItem, setOpen, route, open, setRoute  }) => {
   const [active, setActive] = useState(false);
   const [openSiderbar, setOpenSiderbar] = useState(false);
-
+  //const {data:userData,isLoading,refetch} = useLoadUserQuery(undefined,{});
   if (typeof window !== "undefined") {
     window.addEventListener("scroll", () => {
       if (window.scrollY > 85) {
@@ -88,6 +94,47 @@ const Header: FC<Props> = ({ open, setOpen, activeItem }) => {
           </div>
         )}
       </div>
+      {route === "Login" && (
+        <>
+          {open && (
+            <CustomModal
+              open={open}
+              setOpen={setOpen}
+              setRoute={setRoute}
+              activeItem={activeItem}
+              component={Login}
+             // refetch={refetch}
+            />
+          )}
+        </>
+      )}
+
+      {route === "Sign-Up" && (
+        <>
+          {open && (
+            <CustomModal
+              open={open}
+              setOpen={setOpen}
+              setRoute={setRoute}
+              activeItem={activeItem}
+              component={SignUp}
+            />
+          )}
+        </>
+      )}
+       {route === "Verification" && (
+        <>
+          {open && (
+            <CustomModal
+              open={open}
+              setOpen={setOpen}
+              setRoute={setRoute}
+              activeItem={activeItem}
+              component={Verification}
+            />
+          )}
+        </>
+      )}
     </div>
   );
 };
