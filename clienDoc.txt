@@ -27,3 +27,6 @@ npm install @mui/material @emotion/react @emotion/styled react-hot-toast react-r
 Add new user in Admin Dashboard (35.41 minutes)    • Add new user in Admin Dashboard  
 07:30:12 - 08:16:23 Edit & Delete Course
 08:16:23 - 09:19:21 Banner,FAQ,Categories Customization
+
+
+avinash1.gupta.pmt@gmail.com
