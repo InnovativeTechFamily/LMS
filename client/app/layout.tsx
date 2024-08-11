@@ -1,11 +1,12 @@
-"use client"
+"use client";
 import "./globals.css";
 import { Poppins } from "next/font/google";
 import { Josefin_Sans } from "next/font/google";
 import { ThemeProvider } from "./utils/theme-provider";
 import { Toaster } from "react-hot-toast";
 // import { Toaster } from "react-hot-toast";
- import {  Providers } from "./Provider";
+import { Providers } from "./Provider";
+import { SessionProvider } from "next-auth/react";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -30,19 +31,13 @@ export default function RootLayout({
         className={`${poppins.variable} ${josefin.variable} !bg-white bg-no-repeat dark:bg-gradient-to-b dark:from-gray-900 dark:to-black duration-300`}
       >
         <Providers>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          {children}
-          <Toaster position="top-center" reverseOrder={false}/>
-        </ThemeProvider>
-        </Providers>
-        {/* <Providers>
+          <SessionProvider>
             <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-              <Custom>
-                <div>{children}</div>
-              </Custom>
+              {children}
               <Toaster position="top-center" reverseOrder={false} />
             </ThemeProvider>
-        </Providers> */}
+          </SessionProvider>
+        </Providers>
       </body>
     </html>
   );
