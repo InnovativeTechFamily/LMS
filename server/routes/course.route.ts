@@ -8,6 +8,7 @@ import {
   deleteCourse,
   editCourse,
   generateVideoUrl,
+  getAdminAllCourses,
   getAllCourses,
   getCourseByUser,
   getSingleCourse,
@@ -47,5 +48,11 @@ courseRouter.delete(
   isAutheticated,
   authorizeRoles("admin"),
   deleteCourse
+);
+courseRouter.get(
+  "/get-admin-courses",
+  isAutheticated,
+  authorizeRoles("admin"),
+  getAdminAllCourses
 );
 export default courseRouter;

@@ -20,6 +20,9 @@ npm install @mui/material @emotion/react @emotion/styled react-hot-toast react-r
 02:54:50 - 03:57:27 Profile UI and functionalities
 03:57:27 - 04:24:02 Edit Profile and update password
 04:24:02 - 05:20:10 Admin sidebar,create course UI
+{
+npm i react-pro-sidebar@^0.7.1
+}
 05:20:10 - 06:35:14 Course content UI and course preview UI
 06:35:14 - 06:54:13 Create Course Feature
 06:54:13 - 07:30:12 Get all users,courses,manage team
@@ -31,3 +34,12 @@ Add new user in Admin Dashboard (35.41 minutes)    • Add new user in Admin Das
 
 avinash1.gupta.pmt@gmail.com
 3:07:05
+
+note 6:51:51 check all updateAccessToken apply before
+remove{
+  res.status(200).json({
+          status:"success",
+          accessToken
+      })
+}
+next()

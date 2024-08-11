@@ -445,6 +445,16 @@ export const addReplyToReview = CatchAsyncError(
   }
 );
 
+// get all courses --- only for admin
+export const getAdminAllCourses = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      getAllCoursesService(res);
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
 // Delete Course --- only for admin
 export const deleteCourse = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
