@@ -57,3 +57,5 @@ Timestamps:
 04:42:53 - 05:26:38 Implementing socket io and realtime notification
 05:26:38 - 06:08:05 Fixing all bugs and rechecking full application
 06:08:05 - 06:57:42 Deployment & Outro 
+
+

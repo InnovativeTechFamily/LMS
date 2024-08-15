@@ -41,7 +41,7 @@ const CourseDetails = ({
   const discountPercentengePrice = dicountPercentenge.toFixed(0);
 
   const isPurchased =
-    user && user?.courses?.find((item: any) => item._id === data._id);
+    user && user?.courses?.find((item: any) => item.courseId === data._id);
 
   const handleOrder = (e: any) => {
     if (user) {
@@ -51,7 +51,8 @@ const CourseDetails = ({
       openAuthModal(true);
     }
   };
-
+console.log("user",user);
+console.log("isPurchased",isPurchased);
   return (
     <div>
       <div className="w-[90%] 800px:w-[90%] m-auto py-5">

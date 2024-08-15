@@ -11,6 +11,7 @@ import NotificationModel from "../models/notification.Model";
 import { redis } from "../utils/redis";
 import { RedisKey } from "ioredis";
 import { getAllOrdersService, newOrder } from "../services/order.service";
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 interface CustomRequest extends Request {
     user?: IUser;
@@ -21,18 +22,18 @@ export const createOrder = CatchAsyncError(
       try {
         const { courseId, payment_info } = req.body as IOrder;
   
-        // if (payment_info) {
-        //   if ("id" in payment_info) {
-        //     const paymentIntentId = payment_info.id;
-        //     const paymentIntent = await stripe.paymentIntents.retrieve(
-        //       paymentIntentId
-        //     );
+        if (payment_info) {
+          if ("id" in payment_info) {
+            const paymentIntentId = payment_info.id;
+            const paymentIntent = await stripe.paymentIntents.retrieve(
+              paymentIntentId
+            );
   
-        //     if (paymentIntent.status !== "succeeded") {
-        //       return next(new ErrorHandler("Payment not authorized!", 400));
-        //     }
-        //   }
-        // }
+            if (paymentIntent.status !== "succeeded") {
+              return next(new ErrorHandler("Payment not authorized!", 400));
+            }
+          }
+        }
   
         const user = await userModel.findById(req.user?._id);
   
@@ -129,5 +130,39 @@ export const sendStripePublishableKey = CatchAsyncError(
     res.status(200).json({
       publishablekey: process.env.STRIPE_PUBLISHABLE_KEY,
     });
+  }
+);
+// new payment
+export const newPayment = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const myPayment = await stripe.paymentIntents.create({
+        amount: req.body.amount,
+        currency: "inr",
+        description: "E-learning course services",
+        metadata: {
+          company: "E-Learning",
+        },
+        automatic_payment_methods: {
+          enabled: true,
+        },
+        shipping: {
+          name: "Harmik Lathiya",
+          address: {
+            line1: "510 Townsend St",
+            postal_code: "98140",
+            city: "San Francisco",
+            state: "CA",
+            country: "US",
+          },
+        },
+      });
+      res.status(201).json({
+        success: true,
+        client_secret: myPayment.client_secret,
+      });
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 500));
+    }
   }
 );
