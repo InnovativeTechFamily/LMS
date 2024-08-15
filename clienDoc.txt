@@ -43,3 +43,17 @@ remove{
       })
 }
 next()
+
+part 3
+
+Timestamps:
+00:00:00 - 00:35:16 Courses,Reviews,FAQ,Footer UI and features
+00:35:16 - 01:11:39 Course Details UI and Functionalities
+01:11:39 - 01:49:46 Stripe Integration and create order
+01:49:46 - 02:36:42 Course Access Page UI + Functionalities
+02:36:42 - 03:32:22 Adding question and answer in course content
+03:32:22 - 04:21:48 Adding Review and Review Reply in course
+04:21:48 - 04:42:53 Course search & Filter Features
+04:42:53 - 05:26:38 Implementing socket io and realtime notification
+05:26:38 - 06:08:05 Fixing all bugs and rechecking full application
+06:08:05 - 06:57:42 Deployment & Outro 
