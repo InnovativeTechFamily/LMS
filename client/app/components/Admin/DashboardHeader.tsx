@@ -6,10 +6,10 @@ import {
 } from "@/redux/features/notifications/notificationsApi";
 import React, { FC, useEffect, useState } from "react";
 import { IoMdNotificationsOutline } from "react-icons/io";
-//import socketIO from "socket.io-client";
-//import { format } from "timeago.js";
+import socketIO from "socket.io-client";
+import { format } from "timeago.js";
 const ENDPOINT = process.env.NEXT_PUBLIC_SOCKET_SERVER_URI || "";
-//const socketId = socketIO(ENDPOINT, { transports: ["websocket"] });
+const socketId = socketIO(ENDPOINT, { transports: ["websocket"] });
 
 type Props = {
   open?: boolean;
@@ -26,7 +26,7 @@ const DashboardHeader: FC<Props> = ({ open, setOpen }) => {
   const [audio] = useState<any>(
     typeof window !== "undefined" &&
       new Audio(
-        "https://res.cloudinary.com/damk25wo5/video/upload/v1693465789/notification_vcetjn.mp3"
+        "https://res.cloudinary.com/dzabikj6s/video/upload/v1723708430/LMS/NotificationSound/lmsnotification_p8ibqy.mp3"
       )
   );
 
@@ -46,12 +46,12 @@ const DashboardHeader: FC<Props> = ({ open, setOpen }) => {
     audio.load();
   }, [data, isSuccess,audio]);
 
-//   useEffect(() => {
-//     socketId.on("newNotification", (data) => {
-//       refetch();
-//       playNotificationSound();
-//     });
-//   }, []);
+  useEffect(() => {
+    socketId.on("newNotification", (data) => {
+      refetch();
+      playNotificationSound();
+    });
+  }, []);
 
   const handleNotificationStatusChange = async (id: string) => {
     await updateNotificationStatus(id);
@@ -93,7 +93,7 @@ const DashboardHeader: FC<Props> = ({ open, setOpen }) => {
                   {item.message}
                 </p>
                 <p className="p-2 text-black dark:text-white text-[14px]">
-                  {/* {format(item.createdAt)} */}
+                  {format(item.createdAt)}
                 </p>
               </div>
             ))}

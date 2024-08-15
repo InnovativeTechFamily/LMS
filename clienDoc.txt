@@ -55,6 +55,9 @@ Timestamps:
 03:32:22 - 04:21:48 Adding Review and Review Reply in course
 04:21:48 - 04:42:53 Course search & Filter Features
 04:42:53 - 05:26:38 Implementing socket io and realtime notification
+{
+npm i socket.io @type/socket.io
+}
 05:26:38 - 06:08:05 Fixing all bugs and rechecking full application
 06:08:05 - 06:57:42 Deployment & Outro 
 

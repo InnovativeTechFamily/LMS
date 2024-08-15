@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import React, { FC, useEffect, useState } from "react";
 import NavItems from "../utils/NavItems";
@@ -7,13 +8,14 @@ import CustomModal from "../utils/CustomModal";
 import Login from "../components/Auth/Login";
 import SignUp from "../components/Auth/SignUp";
 import Verification from "../components/Auth/Verification";
-import { useLoadUserQuery } from "@/redux/features/api/apiSlice";
 import Image from "next/image";
 import avatar from "../../public/assests/avatar.png";
-import { useSelector } from "react-redux";
 import { useSession } from "next-auth/react";
 import { useLogOutQuery, useSocialAuthMutation } from "@/redux/features/auth/authApi";
-import toast from "react-hot-toast";
+import { toast } from "react-hot-toast";
+import { useLoadUserQuery } from "@/redux/features/api/apiSlice";
+import Loader from "./Loader/Loader";
+
 type Props = {
   open: boolean;
   setOpen: (open: boolean) => void;
@@ -21,27 +23,28 @@ type Props = {
   route: string;
   setRoute: (route: string) => void;
 };
-const Header: FC<Props> = ({ activeItem, setOpen, route, open, setRoute  }) => {
+
+const Header: FC<Props> = ({ activeItem, setOpen, route, open, setRoute }) => {
   const [active, setActive] = useState(false);
-  const [openSiderbar, setOpenSiderbar] = useState(false);
-  //const {data:userData,isLoading,refetch} = useLoadUserQuery(undefined,{});
-  const {user}=useSelector((state:any)=>state.auth);
-  const {data}=useSession();
+  const [openSidebar, setOpenSidebar] = useState(false);
+  const {data:userData,isLoading,refetch} = useLoadUserQuery(undefined,{});
+  const { data } = useSession();
   const [socialAuth, { isSuccess, error }] = useSocialAuthMutation();
   const [logout, setLogout] = useState(false);
   const {} = useLogOutQuery(undefined, {
     skip: !logout ? true : false,
   });
-  console.log(data);
+
   useEffect(() => {
-      if (!user) {
+    if(!isLoading){
+      if (!userData) {
         if (data) {
           socialAuth({
             email: data?.user?.email,
             name: data?.user?.name,
             avatar: data.user?.image,
           });
-         // refetch();
+          refetch();
         }
       }
       if(data === null){
@@ -49,11 +52,12 @@ const Header: FC<Props> = ({ activeItem, setOpen, route, open, setRoute  }) => {
           toast.success("Login Successfully");
         }
       }
-      if(data === null  && !user){
+      if(data === null && !isLoading && !userData){
           setLogout(true);
       }
-    
-  }, [data, user]);
+    }
+  }, [data, userData,isLoading]);
+
   if (typeof window !== "undefined") {
     window.addEventListener("scroll", () => {
       if (window.scrollY > 85) {
@@ -63,19 +67,27 @@ const Header: FC<Props> = ({ activeItem, setOpen, route, open, setRoute  }) => {
       }
     });
   }
+
   const handleClose = (e: any) => {
     if (e.target.id === "screen") {
-      setOpenSiderbar(false);
+      {
+        setOpenSidebar(false);
+      }
     }
   };
-  console.log("header",user)
+
   return (
-    <div className="w-full relative">
+   <>
+   {
+    isLoading ? (
+      <Loader />
+    ) : (
+      <div className="w-full relative">
       <div
         className={`${
           active
-            ? "dark:bg-opacity-50 dark:bg-gradient-to-b dark:from-gray-900 dark:to-black fixed top-0 left-0 w-full h-[80px] z-[80] border-b dark:border-[#ffffff1c] shadow-xl transition duration-500 "
-            : "w-full boeder-b dark:boarder-[#ffffff1c] h-[80px] z-[80] dark:shadow"
+            ? "dark:bg-opacity-50 bg-white dark:bg-gradient-to-b dark:from-gray-900 dark:to-black fixed top-0 left-0 w-full h-[80px] z-[80] border-b dark:border-[#ffffff1c] shadow-xl transition duration-500"
+            : "w-full border-b dark:border-[#ffffff1c] h-[80px] z-[80] dark:shadow"
         }`}
       >
         <div className="w-[95%] 800px:w-[92%] m-auto py-2 h-full">
@@ -83,9 +95,9 @@ const Header: FC<Props> = ({ activeItem, setOpen, route, open, setRoute  }) => {
             <div>
               <Link
                 href={"/"}
-                className={`test=[25px] font-Poppins font-[500] text-black dark:text-white`}
+                className={`text-[25px] font-Poppins font-[500] text-black dark:text-white`}
               >
-                Elearning
+                ELearning
               </Link>
             </div>
             <div className="flex items-center">
@@ -95,14 +107,14 @@ const Header: FC<Props> = ({ activeItem, setOpen, route, open, setRoute  }) => {
               <div className="800px:hidden">
                 <HiOutlineMenuAlt3
                   size={25}
-                  className="cursor-point dark:text-white text-black"
-                  onClick={() => setOpenSiderbar(true)}
+                  className="cursor-pointer dark:text-white text-black"
+                  onClick={() => setOpenSidebar(true)}
                 />
               </div>
-              {user ? (
+              {userData ? (
                 <Link href={"/profile"}>
                   <Image
-                    src={user?.avatar ? user.avatar.url : avatar}
+                    src={userData?.user.avatar ? userData.user.avatar.url : avatar}
                     alt=""
                     width={30}
                     height={30}
@@ -120,24 +132,38 @@ const Header: FC<Props> = ({ activeItem, setOpen, route, open, setRoute  }) => {
             </div>
           </div>
         </div>
-        {/* mobile side bar */}
-        {openSiderbar && (
+
+        {/* mobile sidebar */}
+        {openSidebar && (
           <div
             className="fixed w-full h-screen top-0 left-0 z-[99999] dark:bg-[unset] bg-[#00000024]"
             onClick={handleClose}
             id="screen"
           >
             <div className="w-[70%] fixed z-[999999999] h-screen bg-white dark:bg-slate-900 dark:bg-opacity-90 top-0 right-0">
-            <NavItems activeItem={activeItem} isMobile={true}/>
-            <HiOutlineUserCircle
-                size={25}
-                className="cursor-point dark:text-white text-black"
-                onClick={() => setOpen(true)}
-              />
-              <br/>
-              <br/>
+              <NavItems activeItem={activeItem} isMobile={true} />
+              {userData?.user ? (
+                <Link href={"/profile"}>
+                  <Image
+                    src={userData?.user.avatar ? userData.user.avatar.url : avatar}
+                    alt=""
+                    width={30}
+                    height={30}
+                    className="w-[30px] h-[30px] rounded-full ml-[20px] cursor-pointer"
+                    style={{border: activeItem === 5 ? "2px solid #37a39a" : "none"}}
+                  />
+                </Link>
+              ) : (
+                <HiOutlineUserCircle
+                  size={25}
+                  className="hidden 800px:block cursor-pointer dark:text-white text-black"
+                  onClick={() => setOpen(true)}
+                />
+              )}
+              <br />
+              <br />
               <p className="text-[16px] px-2 pl-5 text-black dark:text-white">
-              Copyright © 2024 Elearnig
+                Copyright © 2023 ELearning
               </p>
             </div>
           </div>
@@ -152,7 +178,7 @@ const Header: FC<Props> = ({ activeItem, setOpen, route, open, setRoute  }) => {
               setRoute={setRoute}
               activeItem={activeItem}
               component={Login}
-             // refetch={refetch}
+              refetch={refetch}
             />
           )}
         </>
@@ -171,7 +197,8 @@ const Header: FC<Props> = ({ activeItem, setOpen, route, open, setRoute  }) => {
           )}
         </>
       )}
-       {route === "Verification" && (
+
+      {route === "Verification" && (
         <>
           {open && (
             <CustomModal
@@ -185,6 +212,9 @@ const Header: FC<Props> = ({ activeItem, setOpen, route, open, setRoute  }) => {
         </>
       )}
     </div>
+    )
+   }
+   </>
   );
 };
 
