@@ -21,7 +21,7 @@ app.use(cookieParser());
 app.use(
   cors({
     //origin: process.env.ORIGIN,
-    origin:['http://localhost:3000'],
+    origin:['http://localhost:3000','https://lms-ivory-one.vercel.app'],
     credentials:true
   })
 );
