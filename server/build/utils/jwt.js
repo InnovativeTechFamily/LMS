@@ -11,23 +11,23 @@ exports.accessTokenOptions = {
     expires: new Date(Date.now() + accessTokenExpire * 60 * 60 * 1000),
     maxAge: accessTokenExpire * 60 * 60 * 1000,
     httpOnly: true,
-    sameSite: "lax",
-    // secure: true,
+    sameSite: "none",
+    secure: true,
 };
 exports.refreshTokenOptions = {
     expires: new Date(Date.now() + refreshTokenExpire * 24 * 60 * 60 * 1000),
     maxAge: refreshTokenExpire * 24 * 60 * 60 * 1000,
     httpOnly: true,
-    sameSite: "lax",
-    // secure: true,
+    sameSite: "none",
+    secure: true,
 };
 const sendToken = (user, statusCode, res) => {
     const accessToken = user.SignAccessToken();
     const refreshToken = user.SignRefreshToken();
-    //only set sesure to true in product
-    if (process.env.NODE_ENV === "producttion") {
-        exports.accessTokenOptions.secure = true;
-    }
+    // //only set sesure to true in product
+    // if (process.env.NODE_ENV === "producttion") {
+    //   accessTokenOptions.secure = true;
+    // }
     res.cookie("access_token", accessToken, exports.accessTokenOptions);
     res.cookie("refresh_token", refreshToken, exports.refreshTokenOptions);
     // upload session to redis
