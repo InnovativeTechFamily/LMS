@@ -8,23 +8,34 @@ const catchAsyncErrors_1 = require("./catchAsyncErrors");
 const ErrorHandler_1 = __importDefault(require("../utils/ErrorHandler"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const redis_1 = require("../utils/redis");
+const user_controller_1 = require("../controllers/user.controller");
+// authenticated user
 exports.isAutheticated = (0, catchAsyncErrors_1.CatchAsyncError)(async (req, res, next) => {
-    // console.log("User in middleware: ");
     const access_token = req.cookies.access_token;
     if (!access_token) {
         return next(new ErrorHandler_1.default("Please login to access this resource", 400));
     }
-    const decoded = jsonwebtoken_1.default.verify(access_token, process.env.ACCESS_TOKEN);
+    const decoded = jsonwebtoken_1.default.decode(access_token);
     if (!decoded) {
-        return next(new ErrorHandler_1.default("Access token is not valid", 400));
+        return next(new ErrorHandler_1.default("access token is not valid", 400));
     }
-    const user = await redis_1.redis.get(decoded.id);
-    // console.log("User in middleware: ", user);
-    if (!user) {
-        return next(new ErrorHandler_1.default("Please login to access this resource", 400));
+    // check if the access token is expired
+    if (decoded.exp && decoded.exp <= Date.now() / 1000) {
+        try {
+            await (0, user_controller_1.updateAccessToken)(req, res, next);
+        }
+        catch (error) {
+            return next(error);
+        }
     }
-    req.user = JSON.parse(user);
-    next();
+    else {
+        const user = await redis_1.redis.get(decoded.id);
+        if (!user) {
+            return next(new ErrorHandler_1.default("Please login to access this resource", 400));
+        }
+        req.user = JSON.parse(user);
+        next();
+    }
 });
 // validate user role
 const authorizeRoles = (...roles) => {
