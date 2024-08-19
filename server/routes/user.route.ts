@@ -13,7 +13,7 @@ import {
   getAllUsers,
   updateUserRole,
   deleteUser,
-} from "../controllers/user.comtroller";
+} from "../controllers/user.controller";
 import { authorizeRoles, isAutheticated } from "../middleware/auth";
 const userRouter = express.Router();
 
