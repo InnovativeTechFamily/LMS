@@ -51,8 +51,8 @@ const CourseDetails = ({
       openAuthModal(true);
     }
   };
-console.log("user",user);
-console.log("isPurchased",isPurchased);
+//console.log("user",user);
+//console.log("isPurchased",isPurchased);
   return (
     <div>
       <div className="w-[90%] 800px:w-[90%] m-auto py-5">

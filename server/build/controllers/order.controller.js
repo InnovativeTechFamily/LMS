@@ -29,7 +29,7 @@ exports.createOrder = (0, catchAsyncErrors_1.CatchAsyncError)(async (req, res, n
             }
         }
         const user = await user_model_1.default.findById(req.user?._id);
-        const courseExistInUser = user?.courses.some((course) => courseId.toString() === courseId);
+        const courseExistInUser = user?.courses.some((course) => course._id.toString() === courseId);
         if (courseExistInUser) {
             return next(new ErrorHandler_1.default("You have already purchased this course", 400));
         }
