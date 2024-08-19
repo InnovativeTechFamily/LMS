@@ -40,10 +40,10 @@ export const sendToken = (user: IUser, statusCode: number, res: Response) => {
   const accessToken = user.SignAccessToken();
   const refreshToken = user.SignRefreshToken();
 
-  //only set sesure to true in product
-  if (process.env.NODE_ENV === "producttion") {
-    accessTokenOptions.secure = true;
-  }
+  // //only set sesure to true in product
+  // if (process.env.NODE_ENV === "producttion") {
+  //   accessTokenOptions.secure = true;
+  // }
   res.cookie("access_token", accessToken, accessTokenOptions);
   res.cookie("refresh_token", refreshToken, refreshTokenOptions);
   // upload session to redis
