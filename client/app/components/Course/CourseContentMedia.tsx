@@ -201,10 +201,24 @@ const CourseContentMedia = ({
 
   return (
     <div className="w-[95%] 800px:w-[86%] py-4 m-auto">
-      <CoursePlayer
-        title={data[activeVideo]?.title}
-        videoUrl={data[activeVideo]?.videoUrl}
-      />
+      {/* Conditional rendering based on the video URL */}
+      {data[activeVideo]?.videoUrl.includes("www.youtube.com") ? (
+        <iframe
+          className="w-full h-[315px] sm:h-[360px] md:h-[400px] lg:h-[450px] xl:h-[500px] 2xl:h-[550px]"
+          src={`https://www.youtube.com/embed/${new URL(
+            data[activeVideo]?.videoUrl
+          ).searchParams.get("v")}`}
+          title={data[activeVideo]?.title}
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        ></iframe>
+      ) : (
+        <CoursePlayer
+          title={data[activeVideo]?.title}
+          videoUrl={data[activeVideo]?.videoUrl}
+        />
+      )}
       <div className="w-full flex items-center justify-between my-3">
         <div
           className={`${
@@ -412,9 +426,11 @@ const CourseContentMedia = ({
             <div className="w-full">
               {(course?.reviews && [...course.reviews].reverse())?.map(
                 (item: any, index: number) => {
-                  
                   return (
-                    <div className="w-full my-5 dark:text-white text-black" key={index}>
+                    <div
+                      className="w-full my-5 dark:text-white text-black"
+                      key={index}
+                    >
                       <div className="w-full flex">
                         <div>
                           <Image
@@ -438,17 +454,18 @@ const CourseContentMedia = ({
                           </small>
                         </div>
                       </div>
-                      {user.role === "admin" && item.commentReplies.length === 0 && (
-                        <span
-                          className={`${styles.label} !ml-10 cursor-pointer`}
-                          onClick={() => {
-                            setIsReviewReply(true);
-                            setReviewId(item._id);
-                          }}
-                        >
-                          Add Reply
-                        </span>
-                      )}
+                      {user.role === "admin" &&
+                        item.commentReplies.length === 0 && (
+                          <span
+                            className={`${styles.label} !ml-10 cursor-pointer`}
+                            onClick={() => {
+                              setIsReviewReply(true);
+                              setReviewId(item._id);
+                            }}
+                          >
+                            Add Reply
+                          </span>
+                        )}
 
                       {isReviewReply && reviewId === item._id && (
                         <div className="w-full flex relative">
@@ -470,7 +487,10 @@ const CourseContentMedia = ({
                       )}
 
                       {item.commentReplies.map((i: any, index: number) => (
-                        <div className="w-full flex 800px:ml-16 my-5" key={index}>
+                        <div
+                          className="w-full flex 800px:ml-16 my-5"
+                          key={index}
+                        >
                           <div className="w-[50px] h-[50px]">
                             <Image
                               src={
@@ -599,10 +619,13 @@ const CommentItem = ({
           </span>
         </div>
 
-        {replyActive && questionId === item._id &&  (
+        {replyActive && questionId === item._id && (
           <>
             {item.questionReplies.map((item: any) => (
-              <div className="w-full flex 800px:ml-16 my-5 text-black dark:text-white" key={item._id}>
+              <div
+                className="w-full flex 800px:ml-16 my-5 text-black dark:text-white"
+                key={item._id}
+              >
                 <div>
                   <Image
                     src={

@@ -18,7 +18,6 @@ const CourseContent = ({ id,user }: Props) => {
   const data = contentData?.content;
 
   const [activeVideo, setActiveVideo] = useState(0);
-console.log("data",data,id);
   return (
     <>
       {isLoading ? (

@@ -36,12 +36,27 @@ const CoursePreview: FC<Props> = ({
 
   return (
     <div className="w-[90%] m-auto py-5 mb-5">
-      <div className="w-full relative">
+      <div className="w-full relative dark:text-white">
         <div className="w-full mt-10">
-          <CoursePlayer
-            videoUrl={courseData?.demoUrl}
-            title={courseData?.title}
-          />
+            {/* Conditional rendering based on the video URL */}
+            { courseData?.demoUrl.includes("www.youtube.com") ? (
+                <iframe
+                  className="w-full h-[315px] sm:h-[360px] md:h-[400px] lg:h-[450px] xl:h-[500px] 2xl:h-[550px]"
+                  src={`https://www.youtube.com/embed/${new URL(
+                    courseData?.demoUrl
+                  ).searchParams.get("v")}`}
+                  title={courseData?.title}
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                ></iframe>
+              ) : (
+                <CoursePlayer
+                videoUrl={courseData?.demoUrl}
+                title={courseData?.title}
+              />
+              )}
+         
         </div>
         <div className="flex items-center">
           <h1 className="pt-5 text-[25px]">
@@ -83,7 +98,7 @@ const CoursePreview: FC<Props> = ({
         <p className="pb-1">• Certificate of completion</p>
         <p className="pb-3 800px:pb-1">• Premium Support</p>
       </div>
-      <div className="w-full">
+      <div className="w-full dark:text-white">
         <div className="w-full 800px:pr-5">
           <h1 className="text-[25px] font-Poppins font-[600]">
             {courseData?.name}
