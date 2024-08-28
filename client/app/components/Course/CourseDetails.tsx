@@ -27,7 +27,7 @@ const CourseDetails = ({
   setRoute,
   setOpen: openAuthModal,
 }: Props) => {
-  const { data: userData,refetch } = useLoadUserQuery(undefined, {});
+  const { data: userData, refetch } = useLoadUserQuery(undefined, {});
   const [user, setUser] = useState<any>();
   const [open, setOpen] = useState(false);
 
@@ -51,8 +51,9 @@ const CourseDetails = ({
       openAuthModal(true);
     }
   };
-//console.log("user",user);
-//console.log("isPurchased",isPurchased);
+  //console.log("user",user);
+  //console.log("isPurchased",isPurchased);
+  console.log("data?.demoUrl", data?.demoUrl);
   return (
     <div>
       <div className="w-[90%] 800px:w-[90%] m-auto py-5">
@@ -216,7 +217,22 @@ const CourseDetails = ({
           </div>
           <div className="w-full 800px:w-[35%] relative">
             <div className="sticky top-[100px] left-0 z-50 w-full">
-              <CoursePlayer videoUrl={data?.demoUrl} title={data?.title} />
+              {/* Conditional rendering based on the video URL */}
+              {data?.demoUrl.includes("www.youtube.com") ? (
+                <iframe
+                 className="w-full h-[315px] sm:h-[360px]"
+                  src={`https://www.youtube.com/embed/${new URL(
+                    data?.demoUrl
+                  ).searchParams.get("v")}`}
+                  title={data?.title}
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                ></iframe>
+              ) : (
+                <CoursePlayer videoUrl={data?.demoUrl} title={data?.title} />
+              )}
+
               <div className="flex items-center">
                 <h1 className="pt-5 text-[25px] text-black dark:text-white">
                   {data.price === 0 ? "Free" : data.price + "$"}
@@ -277,7 +293,12 @@ const CourseDetails = ({
               <div className="w-full">
                 {stripePromise && clientSecret && (
                   <Elements stripe={stripePromise} options={{ clientSecret }}>
-                    <CheckOutForm setOpen={setOpen} data={data} user={user} refetch={refetch} />
+                    <CheckOutForm
+                      setOpen={setOpen}
+                      data={data}
+                      user={user}
+                      refetch={refetch}
+                    />
                   </Elements>
                 )}
               </div>
