@@ -36,8 +36,11 @@ yarn-error.log*
 next-env.d.ts
 server/node_modules
 server/.env
-
+server/build
 
 client/.env
 /client/node_modules
 /client/.next
+
+lms-dotnetcore/.vs
+lms-dotnetcore/lms-dotnetcore/bin
