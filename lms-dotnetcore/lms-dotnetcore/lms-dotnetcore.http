@@ -1,0 +1,6 @@
+@lms_dotnetcore_HostAddress = http://localhost:5162
+
+GET {{lms_dotnetcore_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

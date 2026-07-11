@@ -42,3 +42,5 @@ client/.env
 /client/node_modules
 /client/.next
 
+lms-dotnetcore/.vs
+lms-dotnetcore/lms-dotnetcore/bin
