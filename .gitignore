@@ -44,3 +44,12 @@ client/.env
 
 lms-dotnetcore/.vs
 lms-dotnetcore/lms-dotnetcore/bin
+
+
+
+lms-dotnetcore/lms-dotnetcore/obj
+lms-dotnetcore/lms-dotnetcore/**/obj
+lms-dotnetcore/lms-dotnetcore/**/bin
+.vs/
+**/obj/
+**/bin/
