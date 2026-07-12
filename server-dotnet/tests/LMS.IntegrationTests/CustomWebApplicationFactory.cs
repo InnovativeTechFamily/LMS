@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 
-namespace LMS.Tests.Integration;
+namespace LMS.IntegrationTests;
 
 /// <summary>
 /// Boots the real API in-memory but keeps it hermetic: supplies test JWT settings and removes

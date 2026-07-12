@@ -5,7 +5,7 @@ using LMS.Infrastructure.Identity;
 using Microsoft.Extensions.Options;
 using Xunit;
 
-namespace LMS.Tests.Unit;
+namespace LMS.UnitTests;
 
 /// <summary>
 /// Unit tests for <see cref="TokenService"/> — exercises the real JWT signing/validation logic

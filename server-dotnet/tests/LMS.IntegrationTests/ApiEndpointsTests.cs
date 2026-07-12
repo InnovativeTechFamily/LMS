@@ -3,7 +3,7 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using Xunit;
 
-namespace LMS.Tests.Integration;
+namespace LMS.IntegrationTests;
 
 /// <summary>
 /// Integration tests that drive the API through its full pipeline (routing, auth, middleware).

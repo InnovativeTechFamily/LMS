@@ -6,6 +6,7 @@
     <Project Path="src/LMS.WebApi/LMS.WebApi.csproj" />
   </Folder>
   <Folder Name="/tests/">
-    <Project Path="tests/LMS.Tests/LMS.Tests.csproj" />
+    <Project Path="tests/LMS.IntegrationTests/LMS.IntegrationTests.csproj" />
+    <Project Path="tests/LMS.UnitTests/LMS.UnitTests.csproj" />
   </Folder>
 </Solution>

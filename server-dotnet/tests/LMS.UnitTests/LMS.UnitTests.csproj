@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!--
+      Targets net9.0 because no .NET 8 runtime is installed here (only 9/10). It references the
+      net8.0 app projects (down-level references are allowed). In an environment with the .NET 8
+      runtime, this would normally target net8.0 to match the system under test.
+    -->
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.2" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <!-- Unit tests exercise pure logic; only the layers under test are referenced (no web host). -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\LMS.Application\LMS.Application.csproj" />
+    <ProjectReference Include="..\..\src\LMS.Infrastructure\LMS.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
