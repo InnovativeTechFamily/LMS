@@ -6,7 +6,6 @@ using StackExchange.Redis;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-
 namespace LMS.API.Extensions
 {
     public static class ServiceExtensions
@@ -15,6 +14,7 @@ namespace LMS.API.Extensions
             this IServiceCollection services,
             IConfiguration configuration)
         {
+           
             // MongoDB Configuration
             var mongoSettings = new MongoDbSettings();
             configuration.GetSection("MongoDB").Bind(mongoSettings);
@@ -58,9 +58,8 @@ namespace LMS.API.Extensions
             services.AddScoped<ICloudinaryService, CloudinaryService>();
             services.AddScoped<ICacheService, CacheService>();
 
-            // AutoMapper
-            services.AddAutoMapper(typeof(Program));
-
+            // Replace the ambiguous AddAutoMapper call with the following line in AddApplicationServices:
+            services.AddAutoMapper(typeof(Program).Assembly);
             return services;
         }
 

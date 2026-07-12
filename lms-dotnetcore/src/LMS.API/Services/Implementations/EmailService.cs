@@ -48,7 +48,7 @@ namespace LMS.API.Services.Implementations
                     <body>
                         <h1>Password Reset Request</h1>
                         <p>You requested to reset your password. Click the link below:</p>
-                        <a href="{resetLink}">Reset Password</a>
+                        <a href=""{resetLink}"">Reset Password</a>
                         <p>This link will expire in 1 hour.</p>
                         <p>If you didn't request this, please ignore this email.</p>
                         <p>Best regards,<br/>LMS Team</p>

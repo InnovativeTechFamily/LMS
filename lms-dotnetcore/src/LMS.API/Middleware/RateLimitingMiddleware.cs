@@ -21,6 +21,7 @@ namespace LMS.API.Middleware
         {
             var clientIp = context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
             var now = DateTime.UtcNow;
+            bool rateLimitExceeded = false;
 
             lock (_requestCounts)
             {
@@ -34,11 +35,7 @@ namespace LMS.API.Middleware
                     else if (record.count >= _maxRequests)
                     {
                         // Rate limit exceeded
-                        context.Response.StatusCode = StatusCodes.Status429TooManyRequests;
-                        context.Response.ContentType = "application/json";
-                        _logger.LogWarning("Rate limit exceeded for IP: {ClientIp}", clientIp);
-                        await context.Response.WriteAsJsonAsync(new { message = "Rate limit exceeded. Too many requests." });
-                        return;
+                        rateLimitExceeded = true;
                     }
                     else
                     {
@@ -51,6 +48,15 @@ namespace LMS.API.Middleware
                     // First request from this IP
                     _requestCounts[clientIp] = (1, now);
                 }
+            }
+
+            if (rateLimitExceeded)
+            {
+                context.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+                context.Response.ContentType = "application/json";
+                _logger.LogWarning("Rate limit exceeded for IP: {ClientIp}", clientIp);
+                await context.Response.WriteAsJsonAsync(new { message = "Rate limit exceeded. Too many requests." });
+                return;
             }
 
             await _next(context);

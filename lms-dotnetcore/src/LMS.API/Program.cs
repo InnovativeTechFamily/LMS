@@ -1,8 +1,13 @@
 using LMS.API.Extensions;
+using LMS.API.Hubs;
 using LMS.API.Middleware;
 using Serilog;
 
-var builder = WebApplicationBuilder.CreateBuilder(args);
+// Replace this line:
+// var builder = WebApplicationBuilder.CreateBuilder(args);
+
+// With this line:
+var builder = WebApplication.CreateBuilder(args);
 
 // Environment variables
 DotNetEnv.Env.Load();

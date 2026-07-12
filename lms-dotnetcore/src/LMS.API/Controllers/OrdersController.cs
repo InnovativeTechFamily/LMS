@@ -90,7 +90,7 @@ namespace LMS.API.Controllers
                 Id = order.Id,
                 CourseId = order.CourseId,
                 UserId = order.UserId,
-                PaymentInfo = order.PaymentInfo != null ? new Orders.PaymentInfoDto
+                PaymentInfo = order.PaymentInfo != null ? new Models.DTOs.Orders.PaymentInfoDto
                 {
                     Id = order.PaymentInfo.Id,
                     Status = order.PaymentInfo.Status,

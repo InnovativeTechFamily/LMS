@@ -75,6 +75,8 @@ namespace LMS.API.Services.Implementations
                 .ToListAsync();
         }
 
+        // Replace ambiguous FindOneAndUpdateAsync calls with explicit type parameters
+
         public async Task<Course?> UpdateCourseAsync(string courseId, UpdateCourseDto dto)
         {
             _logger.LogInformation("Updating course: {CourseId}", courseId);
@@ -98,7 +100,8 @@ namespace LMS.API.Services.Implementations
             updates.Add(updateBuilder.Set(c => c.UpdatedAt, DateTime.UtcNow));
 
             var update = updateBuilder.Combine(updates);
-            var course = await _coursesCollection.FindOneAndUpdateAsync(
+
+            var course = await _coursesCollection.FindOneAndUpdateAsync<Course>(
                 c => c.Id == courseId,
                 update,
                 new FindOneAndUpdateOptions<Course> { ReturnDocument = ReturnDocument.After }
@@ -120,6 +123,8 @@ namespace LMS.API.Services.Implementations
             return result.DeletedCount > 0;
         }
 
+        // Replace the ambiguous call in AddQuestionAsync with explicit type parameters for FindOneAndUpdateAsync
+
         public async Task<Course?> AddQuestionAsync(string courseId, string contentId, string question, string userId)
         {
             _logger.LogInformation("Adding question to course: {CourseId}", courseId);
@@ -130,7 +135,7 @@ namespace LMS.API.Services.Implementations
                 new Comment { Question = question, User = new UserReference { Id = userId } }
             );
 
-            var course = await _coursesCollection.FindOneAndUpdateAsync(
+            var course = await _coursesCollection.FindOneAndUpdateAsync<Course>(
                 filter,
                 update,
                 new FindOneAndUpdateOptions<Course> { ReturnDocument = ReturnDocument.After }
@@ -160,7 +165,7 @@ namespace LMS.API.Services.Implementations
             };
 
             var update = Builders<Course>.Update.Push(c => c.Reviews, review);
-            var course = await _coursesCollection.FindOneAndUpdateAsync(
+            var course = await _coursesCollection.FindOneAndUpdateAsync<Course>(
                 c => c.Id == courseId,
                 update,
                 new FindOneAndUpdateOptions<Course> { ReturnDocument = ReturnDocument.After }

@@ -22,6 +22,12 @@ namespace LMS.API.Services.Implementations
             _logger = logger;
         }
 
+        // Remove the following lines from the UploadImageAsync method:
+        //     Width = 150,
+        //     Height = 150,
+        //     Crop = "fill"
+        // These properties do not exist on ImageUploadParams. The transformation is already set correctly.
+
         public async Task<(string publicId, string url)> UploadImageAsync(string base64Image, string folder = "avatars")
         {
             _logger.LogInformation("Uploading image to Cloudinary folder: {Folder}", folder);
@@ -36,9 +42,7 @@ namespace LMS.API.Services.Implementations
                     {
                         File = new FileDescription($"upload_{Guid.NewGuid()}", stream),
                         Folder = folder,
-                        Width = 150,
-                        Height = 150,
-                        Crop = "fill"
+                        Transformation = new Transformation().Width(150).Height(150).Crop("fill")
                     };
 
                     var uploadResult = await _cloudinary.UploadAsync(uploadParams);
