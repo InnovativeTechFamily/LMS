@@ -165,10 +165,16 @@ namespace LMS.API.Services.Implementations
                 update = update.Set(u => u.Email, email);
             }
 
-            var user = await _usersCollection.FindOneAndUpdateAsync(
+            //var user = await _usersCollection.FindOneAndUpdateAsync(
+            //    u => u.Id == userId,
+            //    update,
+            //    new FindOneAndUpdateOptions<User> { ReturnDocument = ReturnDocument.After }
+            //);
+            var user = await _usersCollection.FindOneAndUpdateAsync<User>(
                 u => u.Id == userId,
                 update,
-                new FindOneAndUpdateOptions<User> { ReturnDocument = ReturnDocument.After }
+                new FindOneAndUpdateOptions<User> { ReturnDocument = ReturnDocument.After },
+                CancellationToken.None
             );
 
             if (user != null)
@@ -196,15 +202,17 @@ namespace LMS.API.Services.Implementations
                 .Set(u => u.Password, hashedPassword)
                 .Set(u => u.UpdatedAt, DateTime.UtcNow);
 
-            user = await _usersCollection.FindOneAndUpdateAsync(
-                u => u.Id == userId,
-                update,
-                new FindOneAndUpdateOptions<User> { ReturnDocument = ReturnDocument.After }
-            );
-
+            user = await _usersCollection.FindOneAndUpdateAsync<User>(
+                  u => u.Id == userId,
+                  update,
+                  new FindOneAndUpdateOptions<User> { ReturnDocument = ReturnDocument.After },
+                  CancellationToken.None
+              );
             if (user != null)
                 await _cacheService.SetAsync(userId, user, TimeSpan.FromDays(7));
 
+
+            
             return user;
         }
 
@@ -231,11 +239,12 @@ namespace LMS.API.Services.Implementations
                     .Set(u => u.Avatar, new Models.Domain.Avatar { PublicId = publicId, Url = url })
                     .Set(u => u.UpdatedAt, DateTime.UtcNow);
 
-                user = await _usersCollection.FindOneAndUpdateAsync(
-                    u => u.Id == userId,
-                    update,
-                    new FindOneAndUpdateOptions<User> { ReturnDocument = ReturnDocument.After }
-                );
+                user = await _usersCollection.FindOneAndUpdateAsync<User>(
+                 u => u.Id == userId,
+                 update,
+                 new FindOneAndUpdateOptions<User> { ReturnDocument = ReturnDocument.After },
+                 CancellationToken.None
+             );
 
                 if (user != null)
                     await _cacheService.SetAsync(userId, user, TimeSpan.FromDays(7));
@@ -267,10 +276,17 @@ namespace LMS.API.Services.Implementations
                 .Set(u => u.Role, role)
                 .Set(u => u.UpdatedAt, DateTime.UtcNow);
 
-            var user = await _usersCollection.FindOneAndUpdateAsync(
+            var user = await _usersCollection.FindOneAndUpdateAsync<User>(
                 u => u.Id == userId,
                 update,
-                new FindOneAndUpdateOptions<User> { ReturnDocument = ReturnDocument.After }
+                new FindOneAndUpdateOptions<User> { ReturnDocument = ReturnDocument.After },
+                CancellationToken.None
+            );
+            user = await _usersCollection.FindOneAndUpdateAsync<User>(
+                u => u.Id == userId,
+                update,
+                new FindOneAndUpdateOptions<User> { ReturnDocument = ReturnDocument.After },
+                CancellationToken.None
             );
 
             if (user != null)

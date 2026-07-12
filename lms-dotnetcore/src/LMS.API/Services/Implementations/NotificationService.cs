@@ -50,7 +50,7 @@ namespace LMS.API.Services.Implementations
                 .Set(n => n.Status, dto.Status)
                 .Set(n => n.UpdatedAt, DateTime.UtcNow);
 
-            return await _notificationsCollection.FindOneAndUpdateAsync(
+            return await _notificationsCollection.FindOneAndUpdateAsync<Notification>(
                 n => n.Id == notificationId,
                 update,
                 new FindOneAndUpdateOptions<Notification> { ReturnDocument = ReturnDocument.After }

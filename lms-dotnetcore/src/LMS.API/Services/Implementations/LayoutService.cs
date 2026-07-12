@@ -55,13 +55,19 @@ namespace LMS.API.Services.Implementations
                     .Set(l => l.Categories, dto.Categories.Select(c => new Category { Title = c.Title }).ToList())
                     .Set(l => l.UpdatedAt, DateTime.UtcNow);
 
-                return await _layoutsCollection.FindOneAndUpdateAsync(
+                // Fix: Specify type arguments explicitly for FindOneAndUpdateAsync to resolve ambiguity.
+
+                return await _layoutsCollection.FindOneAndUpdateAsync<Layout>(
                     l => l.Type == type,
                     update,
                     new FindOneAndUpdateOptions<Layout> { ReturnDocument = ReturnDocument.After }
                 ) ?? throw new NotFoundException($"Layout of type '{type}' not found");
+
+                
             }
         }
+
+        // Fix ambiguous call to FindOneAndUpdateAsync by specifying type arguments explicitly
 
         public async Task<Layout?> AddFaqAsync(string layoutId, CreateFaqDto dto)
         {
@@ -70,10 +76,10 @@ namespace LMS.API.Services.Implementations
             var faqItem = new FaqItem { Question = dto.Question, Answer = dto.Answer };
             var update = Builders<Layout>.Update.Push(l => l.Faq, faqItem);
 
-            return await _layoutsCollection.FindOneAndUpdateAsync(
+            return await _layoutsCollection.FindOneAndUpdateAsync<Layout, Layout>(
                 l => l.Id == layoutId,
                 update,
-                new FindOneAndUpdateOptions<Layout> { ReturnDocument = ReturnDocument.After }
+                new FindOneAndUpdateOptions<Layout, Layout> { ReturnDocument = ReturnDocument.After }
             );
         }
 
@@ -85,10 +91,10 @@ namespace LMS.API.Services.Implementations
                 .Set(l => l.Faq[faqIndex].Question, dto.Question)
                 .Set(l => l.Faq[faqIndex].Answer, dto.Answer);
 
-            return await _layoutsCollection.FindOneAndUpdateAsync(
+            return await _layoutsCollection.FindOneAndUpdateAsync<Layout, Layout>(
                 l => l.Id == layoutId,
                 update,
-                new FindOneAndUpdateOptions<Layout> { ReturnDocument = ReturnDocument.After }
+                new FindOneAndUpdateOptions<Layout, Layout> { ReturnDocument = ReturnDocument.After }
             );
         }
 
@@ -118,10 +124,10 @@ namespace LMS.API.Services.Implementations
             var category = new Category { Title = dto.Title };
             var update = Builders<Layout>.Update.Push(l => l.Categories, category);
 
-            return await _layoutsCollection.FindOneAndUpdateAsync(
+            return await _layoutsCollection.FindOneAndUpdateAsync<Layout, Layout>(
                 l => l.Id == layoutId,
                 update,
-                new FindOneAndUpdateOptions<Layout> { ReturnDocument = ReturnDocument.After }
+                new FindOneAndUpdateOptions<Layout, Layout> { ReturnDocument = ReturnDocument.After }
             );
         }
 
@@ -131,10 +137,10 @@ namespace LMS.API.Services.Implementations
 
             var update = Builders<Layout>.Update.Set(l => l.Categories[categoryIndex].Title, dto.Title);
 
-            return await _layoutsCollection.FindOneAndUpdateAsync(
+            return await _layoutsCollection.FindOneAndUpdateAsync<Layout, Layout>(
                 l => l.Id == layoutId,
                 update,
-                new FindOneAndUpdateOptions<Layout> { ReturnDocument = ReturnDocument.After }
+                new FindOneAndUpdateOptions<Layout, Layout> { ReturnDocument = ReturnDocument.After }
             );
         }
 
@@ -184,10 +190,10 @@ namespace LMS.API.Services.Implementations
 
             var update = Builders<Layout>.Update.Set(l => l.Banner, banner);
 
-            return await _layoutsCollection.FindOneAndUpdateAsync(
+            return await _layoutsCollection.FindOneAndUpdateAsync<Layout, Layout>(
                 l => l.Id == layoutId,
                 update,
-                new FindOneAndUpdateOptions<Layout> { ReturnDocument = ReturnDocument.After }
+                new FindOneAndUpdateOptions<Layout, Layout> { ReturnDocument = ReturnDocument.After }
             );
         }
     }
