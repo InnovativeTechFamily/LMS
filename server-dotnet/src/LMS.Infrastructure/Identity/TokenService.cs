@@ -21,7 +21,12 @@ public class TokenService : ITokenService
     private readonly JwtSettings _settings;
     private readonly JwtSecurityTokenHandler _handler = new();
 
-    public TokenService(IOptions<JwtSettings> settings) => _settings = settings.Value;
+    public TokenService(IOptions<JwtSettings> settings)
+    {
+        _settings = settings.Value;
+        // Keep custom claim names (name/email/password/id) verbatim instead of remapping them to URIs.
+        _handler.MapInboundClaims = false;
+    }
 
     public string GenerateAccessToken(User user) =>
         Write(new[]

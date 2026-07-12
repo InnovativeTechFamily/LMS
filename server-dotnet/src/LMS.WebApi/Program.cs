@@ -125,3 +125,6 @@ static Task WriteError(HttpResponse response, int statusCode, string message)
         new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
     return response.WriteAsync(payload);
 }
+
+/// <summary>Exposed so the integration test host (<c>WebApplicationFactory&lt;Program&gt;</c>) can reference it.</summary>
+public partial class Program { }

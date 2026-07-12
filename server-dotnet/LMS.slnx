@@ -5,4 +5,7 @@
     <Project Path="src/LMS.Infrastructure/LMS.Infrastructure.csproj" />
     <Project Path="src/LMS.WebApi/LMS.WebApi.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/LMS.Tests/LMS.Tests.csproj" />
+  </Folder>
 </Solution>
