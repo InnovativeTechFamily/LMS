@@ -1,5 +1,7 @@
 # LMS Server — .NET 8 (Clean Architecture)
 
+[![.NET Server CI](https://github.com/InnovativeTechFamily/LMS/actions/workflows/dotnet-server.yml/badge.svg)](https://github.com/InnovativeTechFamily/LMS/actions/workflows/dotnet-server.yml)
+
 A .NET 8 Web API re-implementation of the original Node/Express LMS backend, built with
 Clean Architecture. It is a faithful, drop-in replacement for the Node server: same
 `/api/v1` routes, same JSON response shapes, same MongoDB data (reused as-is) and Redis sessions.
