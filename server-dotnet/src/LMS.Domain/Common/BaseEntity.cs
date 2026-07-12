@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace LMS.Domain.Common;
 
 /// <summary>
@@ -7,6 +9,8 @@ namespace LMS.Domain.Common;
 /// </summary>
 public abstract class BaseEntity
 {
+    /// <summary>Serialized as <c>_id</c> in API responses to match the original Node/Mongoose contract.</summary>
+    [JsonPropertyName("_id")]
     public string? Id { get; set; }
 
     public DateTime CreatedAt { get; set; }

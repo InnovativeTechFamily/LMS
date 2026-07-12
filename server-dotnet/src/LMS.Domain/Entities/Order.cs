@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using LMS.Domain.Common;
 
 namespace LMS.Domain.Entities;
@@ -12,5 +13,6 @@ public class Order : BaseEntity
 
     public string UserId { get; set; } = string.Empty;
 
+    [JsonPropertyName("payment_info")]
     public Dictionary<string, object?> PaymentInfo { get; set; } = new();
 }

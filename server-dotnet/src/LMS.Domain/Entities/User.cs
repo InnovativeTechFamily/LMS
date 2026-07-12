@@ -29,6 +29,7 @@ public class User : BaseEntity
 /// <summary>Cloudinary image reference (public id + secure url).</summary>
 public class Avatar
 {
+    [JsonPropertyName("public_id")]
     public string? PublicId { get; set; }
 
     public string? Url { get; set; }

@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using LMS.Domain.Common;
 
 namespace LMS.Domain.Entities;
@@ -42,6 +43,7 @@ public class Course : BaseEntity
 /// <summary>Cloudinary media reference used for thumbnails and banners.</summary>
 public class MediaFile
 {
+    [JsonPropertyName("public_id")]
     public string? PublicId { get; set; }
 
     public string? Url { get; set; }
@@ -127,6 +129,7 @@ public class ReviewReply : BaseEntity
 /// </summary>
 public class UserSummary
 {
+    [JsonPropertyName("_id")]
     public string? Id { get; set; }
 
     public string Name { get; set; } = string.Empty;
