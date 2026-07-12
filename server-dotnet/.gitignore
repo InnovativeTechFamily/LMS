@@ -1,0 +1,11 @@
+# .NET build artifacts
+bin/
+obj/
+*.user
+
+# Local runtime / logs
+boot.log
+*.log
+
+# Local secrets (use user-secrets or environment variables instead)
+appsettings.Local.json
