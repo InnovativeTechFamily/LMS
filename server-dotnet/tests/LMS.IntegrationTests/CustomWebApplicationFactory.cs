@@ -1,19 +1,39 @@
+using LMS.Application.Common.Interfaces.Services;
+using LMS.Domain.Common;
+using LMS.Domain.Entities;
+using LMS.Infrastructure.Persistence;
+using LMS.IntegrationTests.Fakes;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using Mongo2Go;
+using MongoDB.Driver;
+using StackExchange.Redis;
 
 namespace LMS.IntegrationTests;
 
 /// <summary>
-/// Boots the real API in-memory but keeps it hermetic: supplies test JWT settings and removes
-/// the background cleanup job so no external MongoDB/Redis connection is attempted. The endpoints
-/// under test (<c>/test</c> and an unauthorized admin route) never touch the data stores.
+/// Boots the real API against an ephemeral MongoDB (Mongo2Go) and replaces the external
+/// integrations (Redis, SMTP, Cloudinary, Stripe, VdoCipher) with in-memory fakes, so the full
+/// request pipeline — routing, auth, middleware, services and persistence — runs hermetically.
 /// </summary>
 public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 {
+    private readonly MongoDbRunner _mongo;
+
+    public InMemoryCacheService Cache { get; } = new();
+    public RecordingEmailService Email { get; } = new();
+
+    private const string TestDatabase = "lms_integration_tests";
+
+    public CustomWebApplicationFactory()
+    {
+        _mongo = MongoDbRunner.Start(singleNodeReplSet: false);
+    }
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseEnvironment("Testing");
@@ -25,14 +45,62 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
                 ["Jwt:AccessTokenSecret"] = "integration-test-access-secret-at-least-32-chars",
                 ["Jwt:RefreshTokenSecret"] = "integration-test-refresh-secret-at-least-32-chars",
                 ["Jwt:ActivationSecret"] = "integration-test-activation-secret-at-least-32ch",
-                ["Mongo:ConnectionString"] = "mongodb://localhost:27017",
-                ["Redis:ConnectionString"] = "localhost:6379",
+                // Access tokens live long enough that a whole test class can reuse one.
+                ["Jwt:AccessTokenExpireMinutes"] = "30",
+                ["Mongo:ConnectionString"] = _mongo.ConnectionString,
+                ["Mongo:Database"] = TestDatabase,
             });
         });
 
         builder.ConfigureServices(services =>
         {
+            // No background jobs in tests.
             services.RemoveAll<IHostedService>();
+
+            // Redis → in-memory cache (and drop the eager multiplexer so no connection is attempted).
+            services.RemoveAll<IConnectionMultiplexer>();
+            services.RemoveAll<ICacheService>();
+            services.AddSingleton<ICacheService>(Cache);
+
+            // External integrations → fakes.
+            services.RemoveAll<IEmailService>();
+            services.AddSingleton<IEmailService>(Email);
+            services.RemoveAll<IMediaStorage>();
+            services.AddSingleton<IMediaStorage, FakeMediaStorage>();
+            services.RemoveAll<IPaymentService>();
+            services.AddSingleton<IPaymentService, FakePaymentService>();
+            services.RemoveAll<IVideoService>();
+            services.AddSingleton<IVideoService, FakeVideoService>();
         });
+    }
+
+    private MongoContext Context => Services.GetRequiredService<MongoContext>();
+
+    /// <summary>Clears all collections and the cache so each test starts from a clean slate.</summary>
+    public async Task ResetAsync()
+    {
+        var ctx = Context;
+        await ctx.Users.DeleteManyAsync(FilterDefinition<User>.Empty);
+        await ctx.Courses.DeleteManyAsync(FilterDefinition<Course>.Empty);
+        await ctx.Orders.DeleteManyAsync(FilterDefinition<LMS.Domain.Entities.Order>.Empty);
+        await ctx.Notifications.DeleteManyAsync(FilterDefinition<Notification>.Empty);
+        await ctx.Layouts.DeleteManyAsync(FilterDefinition<Layout>.Empty);
+        Cache.Clear();
+        Email.Clear();
+    }
+
+    /// <summary>Promotes an existing user to admin directly in the database (no admin endpoint needed to bootstrap).</summary>
+    public async Task PromoteToAdminAsync(string email)
+    {
+        var update = Builders<User>.Update.Set(u => u.Role, UserRoles.Admin);
+        await Context.Users.UpdateOneAsync(u => u.Email == email, update);
+        // Invalidate any cached copy so the next token/login reflects the new role.
+        await Cache.RemoveAsync(email);
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        base.Dispose(disposing);
+        if (disposing) _mongo.Dispose();
     }
 }
