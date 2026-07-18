@@ -127,3 +127,34 @@ export interface MonthData {
 export interface AnalyticsData {
   last12Months: MonthData[];
 }
+
+/* ------------------------------ Layout ----------------------------- */
+
+export interface FaqItem {
+  question: string;
+  answer: string;
+}
+
+export interface Category {
+  title: string;
+}
+
+export interface Banner {
+  image?: MediaFile;
+  title: string;
+  subTitle: string;
+}
+
+export interface Layout {
+  _id?: string;
+  type: string;
+  faq: FaqItem[];
+  categories: Category[];
+  banner?: Banner;
+}
+
+export const LAYOUT_TYPES = {
+  banner: "Banner",
+  faq: "FAQ",
+  categories: "Categories",
+} as const;

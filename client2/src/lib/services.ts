@@ -1,8 +1,10 @@
 import { api } from "./api";
+import { ApiError } from "./api";
 import type {
   AnalyticsData,
   Course,
   CourseData,
+  Layout,
   Notification,
   Order,
   User,
@@ -176,6 +178,47 @@ export async function getOrdersAnalytics(): Promise<AnalyticsData> {
 export async function getCoursesAnalytics(): Promise<AnalyticsData> {
   const res = await api.get<{ success: boolean; courses: AnalyticsData }>("/get-courses-analytics");
   return res.courses;
+}
+
+/* ------------------------------ Layout ----------------------------- */
+
+/** Public: fetch a layout document by type ("Banner" | "FAQ" | "Categories"). */
+export async function getLayout(type: string): Promise<Layout | null> {
+  try {
+    const res = await api.get<{ success: boolean; layout: Layout | null }>(
+      `/get-layout/${type}`,
+      { anonymous: true }
+    );
+    return res.layout ?? null;
+  } catch (e) {
+    // The layout for a type may not exist yet — treat 404/400 as "no content".
+    if (e instanceof ApiError && (e.status === 404 || e.status === 400)) return null;
+    throw e;
+  }
+}
+
+export interface LayoutPayload {
+  type: string;
+  image?: string;
+  title?: string;
+  subTitle?: string;
+  faq?: { question: string; answer: string }[];
+  categories?: { title: string }[];
+}
+
+export function createLayout(input: LayoutPayload) {
+  return api.post<{ success: boolean; message: string }>("/create-layout", input);
+}
+
+export function editLayout(input: LayoutPayload) {
+  return api.put<{ success: boolean; message: string }>("/edit-layout", input);
+}
+
+/** Create the layout if missing, otherwise edit it. */
+export async function saveLayout(input: LayoutPayload): Promise<void> {
+  const existing = await getLayout(input.type);
+  if (existing) await editLayout(input);
+  else await createLayout(input);
 }
 
 /* --- Notifications --- */

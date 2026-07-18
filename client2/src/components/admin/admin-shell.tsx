@@ -7,6 +7,7 @@ import {
   Bell,
   BookOpen,
   LayoutDashboard,
+  LayoutTemplate,
   ShoppingCart,
   Users,
 } from "lucide-react";
@@ -17,6 +18,7 @@ const nav = [
   { href: "/admin/courses", label: "Courses", icon: BookOpen },
   { href: "/admin/users", label: "Users", icon: Users },
   { href: "/admin/orders", label: "Orders", icon: ShoppingCart },
+  { href: "/admin/content", label: "Content", icon: LayoutTemplate },
   { href: "/admin/notifications", label: "Notifications", icon: Bell },
 ];
 

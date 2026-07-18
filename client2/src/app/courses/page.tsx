@@ -4,8 +4,9 @@ import { useEffect, useMemo, useState } from "react";
 import { Search, SlidersHorizontal } from "lucide-react";
 import { CourseCard, CourseCardSkeleton } from "@/components/course-card";
 import { Input } from "@/components/ui/input";
-import { getCourses } from "@/lib/services";
+import { getCourses, getLayout } from "@/lib/services";
 import { cn } from "@/lib/utils";
+import { LAYOUT_TYPES } from "@/lib/types";
 import type { Course } from "@/lib/types";
 
 type SortKey = "popular" | "rating" | "newest" | "priceLow";
@@ -19,6 +20,7 @@ const sorts: { key: SortKey; label: string }[] = [
 
 export default function CoursesPage() {
   const [courses, setCourses] = useState<Course[] | null>(null);
+  const [layoutCategories, setLayoutCategories] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<string>("All");
@@ -26,13 +28,27 @@ export default function CoursesPage() {
 
   useEffect(() => {
     getCourses().then(setCourses).catch((e) => setError(e.message));
+    // Admin-managed categories drive the filter order; ignore failures (fall back to course-derived).
+    getLayout(LAYOUT_TYPES.categories)
+      .then((l) => setLayoutCategories(l?.categories?.map((c) => c.title) ?? []))
+      .catch(() => {});
   }, []);
 
-  const categories = useMemo(() => {
-    const set = new Set<string>();
-    courses?.forEach((c) => c.categories && set.add(c.categories));
-    return ["All", ...Array.from(set)];
+  // Count courses per category so each chip can show how many it holds.
+  const counts = useMemo(() => {
+    const map = new Map<string, number>();
+    courses?.forEach((c) => {
+      if (c.categories) map.set(c.categories, (map.get(c.categories) ?? 0) + 1);
+    });
+    return map;
   }, [courses]);
+
+  // Canonical list = admin Categories layout (in order), then any course category not covered by it.
+  const categories = useMemo(() => {
+    const seen = new Set(layoutCategories);
+    const extras = Array.from(counts.keys()).filter((c) => !seen.has(c));
+    return ["All", ...layoutCategories, ...extras];
+  }, [layoutCategories, counts]);
 
   const visible = useMemo(() => {
     if (!courses) return [];
@@ -98,23 +114,35 @@ export default function CoursesPage() {
         </div>
       </div>
 
-      {/* Category chips */}
+      {/* Category chips (admin-managed via the Categories layout) */}
       {categories.length > 1 && (
         <div className="mb-8 flex flex-wrap gap-2">
-          {categories.map((c) => (
-            <button
-              key={c}
-              onClick={() => setCategory(c)}
-              className={cn(
-                "rounded-full border px-4 py-1.5 text-sm transition-colors",
-                category === c
-                  ? "border-transparent bg-brand-gradient text-white"
-                  : "border-border text-muted-foreground hover:text-foreground"
-              )}
-            >
-              {c}
-            </button>
-          ))}
+          {categories.map((c) => {
+            const count = c === "All" ? courses?.length ?? 0 : counts.get(c) ?? 0;
+            const active = category === c;
+            return (
+              <button
+                key={c}
+                onClick={() => setCategory(c)}
+                className={cn(
+                  "inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-sm transition-colors",
+                  active
+                    ? "border-transparent bg-brand-gradient text-white"
+                    : "border-border text-muted-foreground hover:text-foreground"
+                )}
+              >
+                {c}
+                <span
+                  className={cn(
+                    "rounded-full px-1.5 text-xs tabular-nums",
+                    active ? "bg-white/20 text-white" : "bg-secondary text-muted-foreground"
+                  )}
+                >
+                  {count}
+                </span>
+              </button>
+            );
+          })}
         </div>
       )}
 
