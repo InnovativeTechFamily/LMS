@@ -16,7 +16,9 @@ using Microsoft.IdentityModel.Tokens;
 var builder = WebApplication.CreateBuilder(args);
 
 // Local, git-ignored overrides for secrets (Mongo, Redis, Stripe, Cloudinary, SMTP, etc.).
-builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: true);
+// Skipped under the Testing environment so integration tests stay hermetic and rely on their own config.
+if (!builder.Environment.IsEnvironment("Testing"))
+    builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: true);
 
 var jwtSettings = builder.Configuration.GetSection(JwtSettings.SectionName).Get<JwtSettings>() ?? new JwtSettings();
 var corsOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()

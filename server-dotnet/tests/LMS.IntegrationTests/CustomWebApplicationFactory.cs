@@ -32,25 +32,23 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
     public CustomWebApplicationFactory()
     {
         _mongo = MongoDbRunner.Start(singleNodeReplSet: false);
+
+        // Provide test config as environment variables so it is present when Program.cs reads
+        // configuration at startup (before the web-host ConfigureAppConfiguration hooks run) — this
+        // keeps the JWT signing key used by TokenService and the bearer validator identical.
+        Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Testing");
+        Environment.SetEnvironmentVariable("Jwt__AccessTokenSecret", "integration-test-access-secret-at-least-32-chars");
+        Environment.SetEnvironmentVariable("Jwt__RefreshTokenSecret", "integration-test-refresh-secret-at-least-32-chars");
+        Environment.SetEnvironmentVariable("Jwt__ActivationSecret", "integration-test-activation-secret-at-least-32ch");
+        // Access tokens live long enough that a whole test class can reuse one.
+        Environment.SetEnvironmentVariable("Jwt__AccessTokenExpireMinutes", "30");
+        Environment.SetEnvironmentVariable("Mongo__ConnectionString", _mongo.ConnectionString);
+        Environment.SetEnvironmentVariable("Mongo__Database", TestDatabase);
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseEnvironment("Testing");
-
-        builder.ConfigureAppConfiguration((_, config) =>
-        {
-            config.AddInMemoryCollection(new Dictionary<string, string?>
-            {
-                ["Jwt:AccessTokenSecret"] = "integration-test-access-secret-at-least-32-chars",
-                ["Jwt:RefreshTokenSecret"] = "integration-test-refresh-secret-at-least-32-chars",
-                ["Jwt:ActivationSecret"] = "integration-test-activation-secret-at-least-32ch",
-                // Access tokens live long enough that a whole test class can reuse one.
-                ["Jwt:AccessTokenExpireMinutes"] = "30",
-                ["Mongo:ConnectionString"] = _mongo.ConnectionString,
-                ["Mongo:Database"] = TestDatabase,
-            });
-        });
 
         builder.ConfigureServices(services =>
         {

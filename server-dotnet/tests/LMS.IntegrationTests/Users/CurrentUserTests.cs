@@ -55,10 +55,14 @@ public class CurrentUserTests : IntegrationTestBase
     {
         var email = "refresh@test.local";
         await RegisterAndActivateAsync("Refresh", email);
-        // Login on the shared client so its cookie container holds the refresh cookie.
-        await Client.PostAsJsonAsync("/api/v1/login", new { email, password = DefaultPassword });
+        var login = await Client.PostAsJsonAsync("/api/v1/login", new { email, password = DefaultPassword });
 
-        var res = await Client.GetAsync("/api/v1/refresh");
+        // The refresh_token cookie is Secure, so the client won't resend it over HTTP — send it explicitly.
+        var refreshCookie = login.Headers.GetValues("Set-Cookie")
+            .First(c => c.StartsWith("refresh_token=")).Split(';')[0];
+        var request = new HttpRequestMessage(HttpMethod.Get, "/api/v1/refresh");
+        request.Headers.Add("Cookie", refreshCookie);
+        var res = await Client.SendAsync(request);
 
         Assert.Equal(HttpStatusCode.OK, res.StatusCode);
         var body = await BodyAsync(res);
