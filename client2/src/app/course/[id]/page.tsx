@@ -47,13 +47,14 @@ export default function CourseDetailPage() {
       return;
     }
     if (owned) {
-      toast.info("You're already enrolled in this course.");
+      router.push(`/learn/${id}`);
       return;
     }
     setEnrolling(true);
     try {
       await createOrder(id);
       toast.success("Enrolled! You now have access to this course.");
+      router.push(`/learn/${id}`);
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Could not enroll.");
     } finally {

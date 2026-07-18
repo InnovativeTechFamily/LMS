@@ -11,6 +11,7 @@ export interface User {
   isVerified: boolean;
   avatar?: Avatar;
   courses: { courseId: string }[];
+  createdAt?: string;
 }
 
 export interface MediaFile {
@@ -22,11 +23,49 @@ export interface TitleItem {
   title: string;
 }
 
+export interface Link {
+  title: string;
+  url: string;
+}
+
+/** Denormalised user snapshot embedded in questions/reviews/replies. */
+export interface UserSummary {
+  _id?: string;
+  name?: string;
+  email?: string;
+  role?: string;
+  avatar?: Avatar;
+}
+
+export interface CommentReply {
+  _id: string;
+  user?: UserSummary;
+  answer: string;
+  createdAt?: string;
+}
+
+/** A learner question on a lecture, with threaded replies. */
+export interface Comment {
+  _id: string;
+  user?: UserSummary;
+  question: string;
+  questionReplies: CommentReply[];
+  createdAt?: string;
+}
+
+export interface ReviewReply {
+  _id: string;
+  user?: UserSummary;
+  comment: string;
+  createdAt?: string;
+}
+
 export interface Review {
   _id: string;
-  user?: Partial<User>;
+  user?: UserSummary;
   rating: number;
   comment: string;
+  commentReplies?: ReviewReply[];
   createdAt?: string;
 }
 
@@ -34,8 +73,13 @@ export interface CourseData {
   _id: string;
   title: string;
   description: string;
+  videoUrl: string;
   videoSection: string;
   videoLength: number;
+  videoPlayer: string;
+  links: Link[];
+  suggestion: string;
+  questions: Comment[];
 }
 
 export interface Course {
@@ -56,4 +100,30 @@ export interface Course {
   ratings: number;
   purchased: number;
   createdAt?: string;
+}
+
+export interface Notification {
+  _id: string;
+  title: string;
+  message: string;
+  status: string;
+  userId?: string;
+  createdAt?: string;
+}
+
+export interface Order {
+  _id: string;
+  courseId: string;
+  userId: string;
+  payment_info?: Record<string, unknown>;
+  createdAt?: string;
+}
+
+export interface MonthData {
+  month: string;
+  count: number;
+}
+
+export interface AnalyticsData {
+  last12Months: MonthData[];
 }
