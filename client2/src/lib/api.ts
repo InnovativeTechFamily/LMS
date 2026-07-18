@@ -50,8 +50,11 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
   const data = text ? JSON.parse(text) : null;
 
   if (!res.ok) {
-    const message =
-      (data && (data.message as string)) || `Request failed (${res.status})`;
+    const fallback =
+      res.status === 429
+        ? "You're doing that too fast — please wait a moment and try again."
+        : `Request failed (${res.status})`;
+    const message = (data && (data.message as string)) || fallback;
     throw new ApiError(message, res.status);
   }
 

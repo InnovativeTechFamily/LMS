@@ -82,18 +82,31 @@ builder.Services.AddCors(options =>
     options.AddPolicy("client", policy =>
         policy.WithOrigins(corsOrigins).AllowAnyHeader().AllowAnyMethod().AllowCredentials()));
 
-// Rate limiting: 100 requests / 15 minutes per client IP (parity with express-rate-limit).
+// Rate limiting: 300 requests / minute per client IP. A short window keeps abuse in check while
+// recovering in seconds, which suits an SPA that fans out many requests per page.
 builder.Services.AddRateLimiter(options =>
 {
-    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
     options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
         RateLimitPartition.GetFixedWindowLimiter(
             context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
             _ => new FixedWindowRateLimiterOptions
             {
-                PermitLimit = 100,
-                Window = TimeSpan.FromMinutes(15),
+                PermitLimit = 300,
+                Window = TimeSpan.FromMinutes(1),
             }));
+
+    // Return a friendly JSON body (and Retry-After) instead of an empty 429.
+    options.OnRejected = async (context, ct) =>
+    {
+        var response = context.HttpContext.Response;
+        response.StatusCode = StatusCodes.Status429TooManyRequests;
+        response.ContentType = "application/json";
+        if (context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter))
+            response.Headers.RetryAfter = ((int)retryAfter.TotalSeconds).ToString();
+        await response.WriteAsync(
+            "{\"success\":false,\"message\":\"You're doing that too fast — please wait a moment and try again.\"}",
+            ct);
+    };
 });
 
 var app = builder.Build();
