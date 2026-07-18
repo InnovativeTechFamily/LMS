@@ -23,17 +23,17 @@ export function Footer() {
           {
             title: "Company",
             items: [
-              { label: "About", href: "/faq" },
-              { label: "Careers", href: "/faq" },
-              { label: "Contact", href: "/faq" },
+              { label: "About", href: "/about" },
+              { label: "FAQ", href: "/faq" },
+              { label: "Contact", href: "/about" },
             ],
           },
           {
             title: "Legal",
             items: [
-              { label: "Privacy", href: "/faq" },
-              { label: "Terms", href: "/faq" },
-              { label: "Cookies", href: "/faq" },
+              { label: "Privacy", href: "/policy#privacy" },
+              { label: "Terms", href: "/policy#terms" },
+              { label: "Cookies", href: "/policy#cookies" },
             ],
           },
         ].map((col) => (
