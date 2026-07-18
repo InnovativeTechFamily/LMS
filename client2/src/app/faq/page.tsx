@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ChevronDown, HelpCircle, Loader2 } from "lucide-react";
+import { HelpCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { FaqAccordion } from "@/components/faq-accordion";
 import { getLayout } from "@/lib/services";
 import { LAYOUT_TYPES } from "@/lib/types";
-import { cn } from "@/lib/utils";
 import type { FaqItem } from "@/lib/types";
 
 const FALLBACK: FaqItem[] = [
@@ -34,7 +34,6 @@ const FALLBACK: FaqItem[] = [
 
 export default function FaqPage() {
   const [items, setItems] = useState<FaqItem[] | null>(null);
-  const [open, setOpen] = useState<number | null>(0);
 
   useEffect(() => {
     getLayout(LAYOUT_TYPES.faq)
@@ -64,46 +63,7 @@ export default function FaqPage() {
             <Loader2 className="h-7 w-7 animate-spin text-primary" />
           </div>
         ) : (
-          <div className="space-y-3">
-            {items.map((item, i) => {
-              const isOpen = open === i;
-              return (
-                <div
-                  key={i}
-                  className={cn(
-                    "overflow-hidden rounded-2xl border bg-card transition-colors",
-                    isOpen ? "border-primary/40" : "border-border"
-                  )}
-                >
-                  <button
-                    onClick={() => setOpen(isOpen ? null : i)}
-                    className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
-                    aria-expanded={isOpen}
-                  >
-                    <span className="font-medium">{item.question}</span>
-                    <ChevronDown
-                      className={cn(
-                        "h-5 w-5 shrink-0 text-muted-foreground transition-transform",
-                        isOpen && "rotate-180 text-primary"
-                      )}
-                    />
-                  </button>
-                  <div
-                    className={cn(
-                      "grid transition-all duration-300 ease-out",
-                      isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
-                    )}
-                  >
-                    <div className="overflow-hidden">
-                      <p className="px-5 pb-5 text-sm leading-relaxed text-muted-foreground">
-                        {item.answer}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          <FaqAccordion items={items} />
         )}
 
         <div className="mt-14 rounded-3xl border border-border bg-card p-8 text-center">

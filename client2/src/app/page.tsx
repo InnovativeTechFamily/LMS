@@ -9,6 +9,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Hero } from "@/components/sections/hero";
 import { FeaturedCourses } from "@/components/sections/featured-courses";
+import { Testimonials } from "@/components/sections/testimonials";
+import { FaqSection } from "@/components/sections/faq-section";
 
 const features = [
   {
@@ -63,6 +65,10 @@ export default function HomePage() {
       </section>
 
       <FeaturedCourses />
+
+      <Testimonials />
+
+      <FaqSection />
 
       {/* CTA */}
       <section className="container pb-24">

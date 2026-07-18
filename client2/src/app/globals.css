@@ -91,6 +91,30 @@
   }
 }
 
+/* Animated brand glow blob behind the hero image (inspired by the classic hero_animation) */
+.hero-glow {
+  background-image: linear-gradient(
+    147.92deg,
+    hsl(258 90% 66% / 0.55) 10.41%,
+    hsl(292 84% 61% / 0.25) 55%,
+    hsl(199 89% 55% / 0) 89.25%
+  );
+  filter: blur(8px);
+  animation: hero-pulse 8s infinite alternate;
+}
+
+@keyframes hero-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.55;
+    transform: scale(0.92);
+  }
+}
+
 /* Ambient grid + glow background used on hero sections */
 .bg-grid {
   background-image: linear-gradient(

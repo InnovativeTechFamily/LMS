@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { Search, SlidersHorizontal } from "lucide-react";
 import { CourseCard, CourseCardSkeleton } from "@/components/course-card";
 import { Input } from "@/components/ui/input";
@@ -19,10 +20,19 @@ const sorts: { key: SortKey; label: string }[] = [
 ];
 
 export default function CoursesPage() {
+  return (
+    <Suspense fallback={<div className="min-h-[60vh]" />}>
+      <CoursesContent />
+    </Suspense>
+  );
+}
+
+function CoursesContent() {
+  const params = useSearchParams();
   const [courses, setCourses] = useState<Course[] | null>(null);
   const [layoutCategories, setLayoutCategories] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(params.get("q") ?? "");
   const [category, setCategory] = useState<string>("All");
   const [sort, setSort] = useState<SortKey>("popular");
 
